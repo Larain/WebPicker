@@ -1,0 +1,34 @@
+@model PickerGameModel.Interfaces.IGameRepository
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Games) {
+        <tr>
+            <td>
+                <p>GameID: @item.GameId</p>
+                <p>Created: @item.CreatedAt</p>
+                
+                <a class="btn btn-success" href="@Url.Action("Connect", "Lobby", new { gameId = item.GameId })">Connect</a>
+                
+                @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

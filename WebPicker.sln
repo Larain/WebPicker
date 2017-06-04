@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebPicker", "WebPicker\WebPicker.csproj", "{84FDD127-68EB-4C94-91A9-7575D5E49278}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebPicker", "WebPicker\WebPicker.csproj", "{4E39BE91-7575-4397-B4C7-6850381D58CF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickerGameModel", "PickerGame\PickerGameModel.csproj", "{4D5CEB39-B53E-4738-9A3D-70139F49E996}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameUnitTests", "GameUnitTests\GameUnitTests.csproj", "{7758554F-1235-4470-BAFF-5343FC238F6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{84FDD127-68EB-4C94-91A9-7575D5E49278}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{84FDD127-68EB-4C94-91A9-7575D5E49278}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{84FDD127-68EB-4C94-91A9-7575D5E49278}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{84FDD127-68EB-4C94-91A9-7575D5E49278}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E39BE91-7575-4397-B4C7-6850381D58CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E39BE91-7575-4397-B4C7-6850381D58CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E39BE91-7575-4397-B4C7-6850381D58CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E39BE91-7575-4397-B4C7-6850381D58CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D5CEB39-B53E-4738-9A3D-70139F49E996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D5CEB39-B53E-4738-9A3D-70139F49E996}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D5CEB39-B53E-4738-9A3D-70139F49E996}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D5CEB39-B53E-4738-9A3D-70139F49E996}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7758554F-1235-4470-BAFF-5343FC238F6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7758554F-1235-4470-BAFF-5343FC238F6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7758554F-1235-4470-BAFF-5343FC238F6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7758554F-1235-4470-BAFF-5343FC238F6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
