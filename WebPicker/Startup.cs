@@ -9,9 +9,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WebPicker.Data;
-using WebPicker.Installers;
+using WebPicker.Helpers;
 using WebPicker.Models;
 using WebPicker.Services;
+using AutoMapper = WebPicker.Helpers.AutoMapper;
 
 namespace WebPicker
 {
@@ -33,6 +34,8 @@ namespace WebPicker
             builder.AddEnvironmentVariables();
 
             Configuration = builder.Build();
+
+            Helpers.AutoMapper.MapViewModels();
         }
 
         public IContainer ApplicationContainer { get; private set; }
@@ -45,6 +48,10 @@ namespace WebPicker
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<LoggerDBContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("LoggerConnection")));
+
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -63,6 +70,7 @@ namespace WebPicker
             builder.Populate(services);
 
             builder.InstallGame();
+            builder.InstallLogger();
 
             var container = builder.Build();
 

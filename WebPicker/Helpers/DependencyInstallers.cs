@@ -1,0 +1,21 @@
+﻿using Autofac;
+using PickerGameModel.Entities;
+using PickerGameModel.Entities.Game;
+using PickerGameModel.Interfaces;
+using PickerGameModel.Interfaces.Game;
+
+namespace WebPicker.Helpers
+{
+    public static class DependencyInstallers
+    {
+        public static void InstallGame(this ContainerBuilder builder)
+        {
+            builder.RegisterType<DefaultGame>().As<IGame>();
+            builder.RegisterType<GameRepository>().SingleInstance().As<IGameRepository>();
+        }
+        public static void InstallLogger(this ContainerBuilder builder)
+        {
+            builder.RegisterType<CustomLogger>().SingleInstance().As<ILogger>();
+        }
+    }
+}

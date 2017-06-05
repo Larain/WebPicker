@@ -43,7 +43,7 @@ namespace PickerGameModel.Entities.Game.Base
         #region Properties
 
         public abstract IGameSettings Settings { get; set; }
-
+        public int PlayersAmount => _participiants.Count;
         public int GameId { get; }
         public DateTime CreatedAt { get; }
         public IPlayer[] Participiants => _participiants.ToArray();

@@ -9,8 +9,8 @@ namespace WebPicker.Models.LobbyViewModels
         public int GameId { get; set; }
         public DateTime CreatedAt { get; set; }
         public GameState GameState { get; set; }
-        public int MaxPlayersLimit { get; set; }
-        public int PlayersAmout { get; set; }
+        public int MaxPlayersAmount { get; set; }
+        public int PlayersAmount { get; set; }
         public IPlayer Owner { get; set; }
         public bool IsUserOwner { get; set; }
     }

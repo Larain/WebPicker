@@ -3,18 +3,26 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PickerGameModel.Entities.Game;
+using PickerGameModel.Entities.Game.Base;
 using PickerGameModel.Exceptions;
 using PickerGameModel.Interfaces;
+using PickerGameModel.Interfaces.Game;
 using WebPicker.Data;
 using WebPicker.Models;
 using WebPicker.Models.LobbyViewModels;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Filters;
+using PickerGameModel.Interfaces.Settings;
+using WebPicker.Controllers.Base;
+using WebPicker.Helpers;
 
 namespace WebPicker.Controllers
 {
     [Authorize]
-    public class LobbyController : Controller
+    public class LobbyController : ControllerWithLogging
     {
-        public LobbyController(IGameRepository repository, ApplicationDbContext applicationDbContext, UserManager<ApplicationUser> userManager)
+        public LobbyController(IGameRepository repository, ApplicationDbContext applicationDbContext, UserManager<ApplicationUser> userManager, ILogger logger) : base(logger)
         {
             GameRepository = repository;
             ApplicationDbContext = applicationDbContext;
@@ -26,12 +34,12 @@ namespace WebPicker.Controllers
         /// <summary>
         /// Application DB context
         /// </summary>
-        protected ApplicationDbContext ApplicationDbContext { get; set; }
+        private ApplicationDbContext ApplicationDbContext { get; set; }
 
         /// <summary>
         /// User manager - attached to application DB context
         /// </summary>
-        protected UserManager<ApplicationUser> UserManager { get; set; }
+        private UserManager<ApplicationUser> UserManager { get; set; }
 
         /// <summary>
         /// List of active game rooms
@@ -51,15 +59,21 @@ namespace WebPicker.Controllers
             var user = await UserManager.GetUserAsync(User);
             var game = GameRepository.Games.First(x => x.GameId == gameId);
 
-            if (game == null) return BadRequest("Game not found");
-
+            if (game == null)
+            {
+                return BadRequest("Game not found");
+            }
             try
             {
                 game.JoinPlayer(user);
             }
-            catch (PlayerAlraedyRegisteredException) { }
+            catch (PlayerAlraedyRegisteredException e)
+            {
+                Logger.LogAsync("Warning", user.ToString(), nameof(Connect), $"Connection attempt to game {gameId}", e.ToString());
+            }
             catch (JoinGameStateException e)
             {
+                Logger.LogAsync("Error", user.ToString(), nameof(Connect), $"Connection attempt to game {gameId}", e.ToString());
                 return BadRequest(e.Message);
             }
 
@@ -69,25 +83,20 @@ namespace WebPicker.Controllers
         // GET: Game/Details/5
         public async Task<ActionResult> Details(int gameId)
         {
+            var user = await UserManager.GetUserAsync(User);
             var game = GameRepository.Games.FirstOrDefault(x => x.GameId == gameId);
 
             if (game == null)
-                return NotFound();
-
-            var user = await UserManager.GetUserAsync(User);
-
-            var dvm = new DetailsViewModel
             {
-                GameId = game.GameId,
-                CreatedAt = game.CreatedAt,
-                GameState = game.GameState,
-                MaxPlayersLimit = game.Settings.MaxPlayersAmount,
-                PlayersAmout = game.Participiants.Length,
-                Owner = game.Owner,
-                IsUserOwner = game.Owner?.PlayerId == user.PlayerId
-            };
+                return NotFound();
+            }
 
-            return View(dvm);
+            var gameDto = Mapper.Map<IGame, DetailsViewModel>(game);
+            Mapper.Map(game.Settings, gameDto);
+
+            gameDto.IsUserOwner = game.Owner.Equals(user);
+
+            return View(gameDto);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace PickerGameModel.Interfaces.Game
         int GameId { get; }
         DateTime CreatedAt { get; }
         IGameSettings Settings { get; }
-
+        int PlayersAmount { get; }
         GameState GameState { get; }
         IPlayer[] Participiants { get; }
         IPlayer[] Winners { get; }

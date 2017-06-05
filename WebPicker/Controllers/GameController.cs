@@ -7,16 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 using PickerGameModel.Exceptions;
 using PickerGameModel.Interfaces;
 using PickerGameModel.Interfaces.Game;
+using WebPicker.Controllers.Base;
 using WebPicker.Data;
+using WebPicker.Helpers;
 using WebPicker.Models;
 using WebPicker.Models.GameViewModels;
 
 namespace WebPicker.Controllers
 {
     [Authorize]
-    public class GameController : Controller
+    public class GameController : ControllerWithLogging
     {
-        public GameController(IGameRepository repository, ApplicationDbContext applicationDbContext, UserManager<ApplicationUser> userManager)
+        public GameController(IGameRepository repository, ApplicationDbContext applicationDbContext, UserManager<ApplicationUser> userManager, ILogger logger) : base(logger)
         {
             GameRepository = repository;
             ApplicationDbContext = applicationDbContext;
@@ -63,10 +65,12 @@ namespace WebPicker.Controllers
             }
             catch (GamePlayerAccessException e)
             {
+                Logger.LogAsync("Error", user.ToString(), nameof(Start), $"Start attempt of game {gameId}", e.ToString());
                 return BadRequest(e.Message);
             }
             catch (GameIsNotReadyException e)
             {
+                Logger.LogAsync("Error", user.ToString(), nameof(Start), $"Start attempt of game {gameId}", e.ToString());
                 return BadRequest(e.Message);
             }
 
@@ -87,10 +91,12 @@ namespace WebPicker.Controllers
             }
             catch (GamePlayerAccessException e)
             {
+                Logger.LogAsync("Error", user.ToString(), nameof(Reset), $"Reset attempt of game {gameId}", e.ToString());
                 return BadRequest(e.Message);
             }
             catch (GameViolationException e)
             {
+                Logger.LogAsync("Error", user.ToString(), nameof(Reset), $"Reset attempt of game {gameId}", e.ToString());
                 return BadRequest(e.Message);
             }
 
@@ -108,6 +114,7 @@ namespace WebPicker.Controllers
 
             var pwm = new PlayViewModel
             {
+                User = user,
                 GameId = gameId,
                 GameState = game.GameState,
                 Lifes = game.GetLifes(user),
@@ -139,16 +146,19 @@ namespace WebPicker.Controllers
                     var result = game.Move(user, playViewModel.Number);
                     answer = ParseTurnResult(result, playViewModel.Number);
                 }
-                catch (GameViolationException)
+                catch (GameViolationException e)
                 {
+                    Logger.LogAsync("Error", user.ToString(), nameof(Reset), $"Play of game {playViewModel.GameId}", e.ToString());
                     return RedirectToAction("Index", "Lobby");
                 }
                 catch (TurnViolationException e)
                 {
+                    Logger.LogAsync("Warning", user.ToString(), nameof(Reset), $"Play of game {playViewModel.GameId}", e.ToString());
                     answer = e.Message;
                 }
-                catch (PlayerDeadException)
+                catch (PlayerDeadException e)
                 {
+                    Logger.LogAsync("Error", user.ToString(), nameof(Reset), $"Play of game {playViewModel.GameId}", e.ToString());
                     return RedirectToAction("Index", "Lobby");
                 }
                 return RedirectToAction("Play", new { gameId = game.GameId, turnResult = answer });
