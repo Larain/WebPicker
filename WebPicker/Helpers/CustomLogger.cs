@@ -10,9 +10,9 @@ namespace WebPicker.Helpers
     {
         private readonly ManualResetEvent _workeResetEvent = new ManualResetEvent(false);
         public string Name { get; set; }
-        public LoggerDBContext LoggerDbContext { get; }
+        public LoggingDbContext LoggerDbContext { get; }
 
-        public CustomLogger(LoggerDBContext loggerDbContext)
+        public CustomLogger(LoggingDbContext loggerDbContext)
         {
             LoggerDbContext = loggerDbContext;
             StartWorker();

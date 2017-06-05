@@ -3,9 +3,9 @@ using WebPicker.Models;
 
 namespace WebPicker.Data
 {
-    public class LoggerDBContext : DbContext
+    public class LoggingDbContext : DbContext
     {
-        public LoggerDBContext(DbContextOptions<LoggerDBContext> options) : base(options)
+        public LoggingDbContext(DbContextOptions<LoggingDbContext> options) : base(options)
         {
         }
 

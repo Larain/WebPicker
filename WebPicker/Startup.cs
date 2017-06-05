@@ -49,7 +49,7 @@ namespace WebPicker
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<LoggerDBContext>(options =>
+            services.AddDbContext<LoggingDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LoggerConnection")));
 
 
