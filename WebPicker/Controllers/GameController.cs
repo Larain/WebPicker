@@ -140,7 +140,7 @@ namespace WebPicker.Controllers
 
                 var user = await UserManager.GetUserAsync(User);
 
-                var answer = "";
+                string answer;
                 try
                 {
                     var result = game.Move(user, playViewModel.Number);
