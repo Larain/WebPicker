@@ -27,7 +27,7 @@ namespace WebPicker.Controllers.Base
 
             var action = context.ActionDescriptor.DisplayName;
 
-            Logger.LogAsync("Info", context.HttpContext.User.Identity.Name, action, message);
+            Logger.Log("Info", context.HttpContext.User.Identity.Name, action, message);
             return base.OnActionExecutionAsync(context, next);
         }
 
@@ -40,7 +40,7 @@ namespace WebPicker.Controllers.Base
 
             var action = context.ActionDescriptor.DisplayName;
 
-            Logger.LogAsync("Info", context.HttpContext.User.Identity.Name, action, message);
+            Logger.Log("Info", context.HttpContext.User.Identity.Name, action, message);
         }
     }
 }

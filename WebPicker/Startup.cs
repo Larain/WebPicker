@@ -12,7 +12,6 @@ using WebPicker.Data;
 using WebPicker.Helpers;
 using WebPicker.Models;
 using WebPicker.Services;
-using AutoMapper = WebPicker.Helpers.AutoMapper;
 
 namespace WebPicker
 {
@@ -35,7 +34,7 @@ namespace WebPicker
 
             Configuration = builder.Build();
 
-            Helpers.AutoMapper.MapViewModels();
+            Helpers.AutoMapper.Initialize();
         }
 
         public IContainer ApplicationContainer { get; private set; }
@@ -64,6 +63,8 @@ namespace WebPicker
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            services.AddSingleton<IConfiguration>(Configuration);
 
             // Add Autofac DI Container
             var builder = new ContainerBuilder();

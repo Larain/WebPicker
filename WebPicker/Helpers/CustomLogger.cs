@@ -20,7 +20,10 @@ namespace WebPicker.Helpers
 
         public void Log(Log log)
         {
-            LoggerDbContext.Log.Add(log);
+            Task.Factory.StartNew(() =>
+            {
+                LoggerDbContext.Log.Add(log);
+            });
         }
 
         public void Log(string level, string user, string action, string message, string exception = null)
@@ -37,7 +40,7 @@ namespace WebPicker.Helpers
                 Exception = exception
             };
 
-            LoggerDbContext.Log.Add(log);
+            Log(log);
         }
         public async void LogAsync(Log log)
         {

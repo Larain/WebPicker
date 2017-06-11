@@ -1,4 +1,4 @@
-@model PickerGameModel.Interfaces.IGameRepository
+@model PickerGameModel.Interfaces.IRepository<PickerGameModel.Interfaces.Services.IGameService>
 
 @{
     ViewData["Title"] = "Index";
@@ -16,13 +16,13 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.Games) {
+    @foreach (var item in Model.Get()) {
         <tr>
             <td>
-                <p>GameID: @item.GameId</p>
-                <p>Created: @item.CreatedAt</p>
+                <p>GameID: @item.Game.GameId</p>
+                <p>Created: @item.Game.CreatedAt</p>
                 
-                <a class="btn btn-success" href="@Url.Action("Connect", "Lobby", new { gameId = item.GameId })">Connect</a>
+                <a class="btn btn-success" href="@Url.Action("Connect", "Lobby", new { gameId = item.Game.GameId })">Connect</a>
                 
                 @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |

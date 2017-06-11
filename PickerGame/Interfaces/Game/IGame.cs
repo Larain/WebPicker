@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using PickerGameModel.Interfaces.Player;
 using PickerGameModel.Interfaces.Settings;
 
@@ -8,21 +9,13 @@ namespace PickerGameModel.Interfaces.Game
     {
         int GameId { get; }
         DateTime CreatedAt { get; }
-        IGameSettings Settings { get; }
+        IGameSettings Settings { get; set; }
         int PlayersAmount { get; }
-        GameState GameState { get; }
-        IPlayer[] Participiants { get; }
-        IPlayer[] Winners { get; }
-        IPlayer Owner { get; }
-        IPlayer PlayerMoving { get; }
-
-        void Start(IPlayer owner);
-        void Reset(IPlayer owner);
-        int GetLifes(IPlayer player);
-        void KickPlayer(IPlayer player);
-        int Move(IPlayer caller, int move);
-        void JoinPlayer(IPlayer player);
-        int TellMeSecret(IPlayer player);
-        void SkipPlayerMove(IPlayer player);
+        List<IPlayer> Participiants { get; }
+        List<IPlayer> Winners { get; }
+        int SecretNumber { get; set; }
+        GameState GameState { get; set; }
+        IPlayer Owner { get; set; }
+        Dictionary<IPlayer, int> AvaibleTurns { get; set; }
     }
 }

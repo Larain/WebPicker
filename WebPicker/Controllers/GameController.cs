@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PickerGameModel.Exceptions;
 using PickerGameModel.Interfaces;
-using PickerGameModel.Interfaces.Game;
+using PickerGameModel.Interfaces.Services;
 using WebPicker.Controllers.Base;
 using WebPicker.Data;
 using WebPicker.Helpers;
@@ -18,7 +18,7 @@ namespace WebPicker.Controllers
     [Authorize]
     public class GameController : ControllerWithLogging
     {
-        public GameController(IGameRepository repository, ApplicationDbContext applicationDbContext, UserManager<ApplicationUser> userManager, ILogger logger) : base(logger)
+        public GameController(IRepository<IGameService> repository, ApplicationDbContext applicationDbContext, UserManager<ApplicationUser> userManager, ILogger logger) : base(logger)
         {
             GameRepository = repository;
             ApplicationDbContext = applicationDbContext;
@@ -40,7 +40,7 @@ namespace WebPicker.Controllers
         /// <summary>
         /// List of active game rooms
         /// </summary>
-        private IGameRepository GameRepository { get; }
+        private IRepository<IGameService> GameRepository { get; }
 
         #endregion
 
@@ -52,7 +52,7 @@ namespace WebPicker.Controllers
 
         public async Task<ActionResult> Start(int gameId)
         {
-            var game = GameRepository.Games.FirstOrDefault(x => x.GameId == gameId);
+            var game = GameRepository.Get(gameId);
 
             if (game == null)
                 return NotFound();
@@ -65,12 +65,12 @@ namespace WebPicker.Controllers
             }
             catch (GamePlayerAccessException e)
             {
-                Logger.LogAsync("Error", user.ToString(), nameof(Start), $"Start attempt of game {gameId}", e.ToString());
+                Logger.Log("Error", user.ToString(), nameof(Start), $"Start attempt of game {gameId}", e.ToString());
                 return BadRequest(e.Message);
             }
             catch (GameIsNotReadyException e)
             {
-                Logger.LogAsync("Error", user.ToString(), nameof(Start), $"Start attempt of game {gameId}", e.ToString());
+                Logger.Log("Error", user.ToString(), nameof(Start), $"Start attempt of game {gameId}", e.ToString());
                 return BadRequest(e.Message);
             }
 
@@ -78,7 +78,7 @@ namespace WebPicker.Controllers
         }
         public async Task<ActionResult> Reset(int gameId)
         {
-            var game = GameRepository.Games.FirstOrDefault(x => x.GameId == gameId);
+            var game = GameRepository.Get(gameId);
 
             if (game == null)
                 return NotFound();
@@ -91,12 +91,12 @@ namespace WebPicker.Controllers
             }
             catch (GamePlayerAccessException e)
             {
-                Logger.LogAsync("Error", user.ToString(), nameof(Reset), $"Reset attempt of game {gameId}", e.ToString());
+                Logger.Log("Error", user.ToString(), nameof(Reset), $"Reset attempt of game {gameId}", e.ToString());
                 return BadRequest(e.Message);
             }
             catch (GameViolationException e)
             {
-                Logger.LogAsync("Error", user.ToString(), nameof(Reset), $"Reset attempt of game {gameId}", e.ToString());
+                Logger.Log("Error", user.ToString(), nameof(Reset), $"Reset attempt of game {gameId}", e.ToString());
                 return BadRequest(e.Message);
             }
 
@@ -105,7 +105,7 @@ namespace WebPicker.Controllers
 
         public async Task<ActionResult> Play(int gameId, string turnResult = "")
         {
-            var game = GameRepository.Games.FirstOrDefault(x => x.GameId == gameId);
+            var game = GameRepository.Get(gameId);
 
             if (game == null)
                 return NotFound();
@@ -116,7 +116,7 @@ namespace WebPicker.Controllers
             {
                 User = user,
                 GameId = gameId,
-                GameState = game.GameState,
+                GameState = game.Game.GameState,
                 Lifes = game.GetLifes(user),
                 Result = turnResult
             };
@@ -130,7 +130,7 @@ namespace WebPicker.Controllers
         {
             if (ModelState.IsValid)
             {
-                var game = GameRepository.Games.FirstOrDefault(x => x.GameId == playViewModel.GameId);
+                var game = GameRepository.Get(playViewModel.GameId);
 
                 if (game == null)
                     return NotFound();
@@ -148,20 +148,20 @@ namespace WebPicker.Controllers
                 }
                 catch (GameViolationException e)
                 {
-                    Logger.LogAsync("Error", user.ToString(), nameof(Reset), $"Play of game {playViewModel.GameId}", e.ToString());
+                    Logger.Log("Error", user.ToString(), nameof(Reset), $"Play of game {playViewModel.GameId}", e.ToString());
                     return RedirectToAction("Index", "Lobby");
                 }
                 catch (TurnViolationException e)
                 {
-                    Logger.LogAsync("Warning", user.ToString(), nameof(Reset), $"Play of game {playViewModel.GameId}", e.ToString());
+                    Logger.Log("Warning", user.ToString(), nameof(Reset), $"Play of game {playViewModel.GameId}", e.ToString());
                     answer = e.Message;
                 }
                 catch (PlayerDeadException e)
                 {
-                    Logger.LogAsync("Error", user.ToString(), nameof(Reset), $"Play of game {playViewModel.GameId}", e.ToString());
+                    Logger.Log("Error", user.ToString(), nameof(Reset), $"Play of game {playViewModel.GameId}", e.ToString());
                     return RedirectToAction("Index", "Lobby");
                 }
-                return RedirectToAction("Play", new { gameId = game.GameId, turnResult = answer });
+                return RedirectToAction("Play", new { gameId = game.Game.GameId, turnResult = answer });
             }
             return BadRequest();
         }

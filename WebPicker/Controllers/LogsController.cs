@@ -1,13 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PickerGameModel.Interfaces;
 using WebPicker.Data;
 using WebPicker.Models;
-using System.Net;
 
 namespace WebPicker.Controllers
 {
@@ -16,16 +13,20 @@ namespace WebPicker.Controllers
     public class LogsController : Controller
     {
         public LoggingDbContext ApplicationDbContext { get; }
+        public IRepository<Log> LogsRepository { get; }
 
-        public LogsController(LoggingDbContext applicationDbContext)
+        public LogsController(LoggingDbContext applicationDbContext, IRepository<Log> logsRepository)
         {
             ApplicationDbContext = applicationDbContext;
+            LogsRepository = logsRepository;
         }
+
         // GET: api/Logs
         [HttpGet]
         public async Task<IEnumerable<Log>> Get()
         {
-            return await ApplicationDbContext.Log.ToListAsync();
+            //return await ApplicationDbContext.Log.ToListAsync();
+            return await LogsRepository.GetAsync();
         }
 
         // GET: api/Logs/5

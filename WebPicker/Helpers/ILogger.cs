@@ -1,5 +1,4 @@
-﻿using System;
-using WebPicker.Models;
+﻿using WebPicker.Models;
 
 namespace WebPicker.Helpers
 {
