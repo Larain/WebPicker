@@ -135,9 +135,6 @@ namespace WebPicker.Controllers
                 if (game == null)
                     return NotFound();
 
-                //if (game.GameState == GameState.Finished || game.GameState == GameState.Draw)
-                //    return RedirectToAction("Details", "Lobby", new {gameId = game.GameId});
-
                 var user = await UserManager.GetUserAsync(User);
 
                 string answer;
